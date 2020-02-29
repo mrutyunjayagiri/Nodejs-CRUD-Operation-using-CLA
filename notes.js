@@ -3,9 +3,82 @@ const chalk = require('chalk');     // For Styling the console statements: for m
 
 
 // Get All Notes
-const getNotes = function () {
-    return 'Your notes...'
+const getNotes = () => {
+    const notes = loadNotes();
+    if (notes.length === 0) {
+        console.log(chalk.yellowBright.inverse(' No Note Available '));
+        return;
+    }
+
+    console.log(chalk.blue.inverse('\n --- My Notes --- \n'));
+    notes.forEach((note, index) => {
+        console.log("Note No: " + (index + 1));
+        console.log(chalk.yellow('Title: ' + note.title + '\nBody: ' + note.body + '\n'));
+    })
 }
+
+// Read a Note
+const readNote = (title) => {
+    const notes = loadNotes();
+    const note = notes.find((note) => note.title === title);
+    if (note) {
+        console.log(chalk.yellow('Title: ' + note.title + '\nBody: ' + note.body + '\n'));
+
+    } else {
+        console.log(chalk.red('No Note Found For Title: ' + title + '\n'));
+
+    }
+
+};
+
+// Update a Note
+const updateNote = (title, updatedTitle, updatedBody) => {
+    const notes = loadNotes();
+    const note = notes.find((note) => note.title === title);
+    if (note) {
+        const duplicateNote = notes.find((note) => note.title === updatedTitle);
+        if (!duplicateNote) {
+            note.title = updatedTitle;
+            note.body = updatedBody;
+            saveNote(notes);
+            console.log(chalk.green.inverse('\n Updated Successfully \n'));
+
+        } else {
+            console.log(chalk.red('Update Failed.\nTitle is taken: ' + updatedTitle + '\n'));
+
+        }
+
+
+    } else {
+        console.log(chalk.red('No Note Found For Title: ' + title + '\n'));
+
+    }
+
+};
+
+
+
+// Add a Note
+const addNote = (title, body) => {
+    const notes = loadNotes();
+    const duplicateNote = notes.find((note) => note.title === title);
+
+debugger
+
+    if (!duplicateNote) {
+        notes.push({
+            title: title,
+            body: body
+        });
+
+        saveNote(notes);
+        console.log(chalk.green.inverse(' Note added successfully '));
+
+    } else {
+        console.log(chalk.red.inverse(' Note title is taken '));
+    }
+
+};
 
 // Remove a Note
 const removeNote = (title) => {
@@ -32,26 +105,7 @@ const removeNote = (title) => {
 
 };
 
-// Add a Note
-const addNote = function (title, body) {
-    const notes = loadNotes();
-    const duplicateNote = notes.filter((note) => note.title === title);
-    if (duplicateNote.length === 0) {
-        notes.push({
-            title: title,
-            body: body
-        });
-
-        saveNote(notes);
-        console.log(chalk.green.inverse(' Note added successfully '));
-
-    } else {
-        console.log(chalk.red.inverse('Note title taken'));
-    }
-
-};
-
-const loadNotes = function () {
+const loadNotes = () => {
     try {
         const dataBuffer = fs.readFileSync('./notes.json');
         const dataJSON = dataBuffer.toString();
@@ -72,5 +126,7 @@ const saveNote = function (note) {
 module.exports = {
     addNote: addNote,
     getNotes: getNotes,
-    removeNote: removeNote
+    readNote: readNote,
+    removeNote: removeNote,
+    updateNote: updateNote
 }

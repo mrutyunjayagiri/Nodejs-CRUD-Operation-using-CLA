@@ -1,7 +1,7 @@
 {
-  "name": "nodecourse",
+  "name": "Nodejs-CRUD-Operation-using-CLA",
   "version": "1.0.0",
-  "description": "UdemyPratice",
+  "description": "Nodejs-CRUD-Operation-using-CLA",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
